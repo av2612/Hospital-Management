@@ -1,0 +1,469 @@
+swagger: "2.0"
+info:
+  description: "This is an api for getting expected delivery date for a pregnant women."
+  version: "1.0.0"
+  title: "Expected Delivery Date"
+  contact:
+    email: "aakash.verma@cerner.com"
+host: localhost:8080
+basePath: "/v1"
+tags:
+- name: "users"
+  description: "Operations related to hospital users"
+schemes:
+- "https"
+- "http"
+paths:
+  /login:
+    post:
+      summary: "Logs employee into the system"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created employee object"
+        required: true
+        schema:
+          $ref: "#/definitions/login"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref : '#/definitions/loginResponse'
+
+        400:
+          description: "Invalid username/password supplied"
+  /register:
+    post:
+      summary: "Registers user into the system"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created employee object"
+        required: true
+        schema:
+          $ref: "#/definitions/register"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref : '#/definitions/loginResponse'
+  
+        400:
+          description: "Invalid username/password supplied"
+  /users:
+    post:
+      tags:
+      - "users"
+      summary: "Registers user into the system"
+      description: ""
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created user object"
+        required: true
+        schema:
+          $ref: "#/definitions/register"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref : '#/definitions/loginResponse'
+        400:
+          description: "Some data is missing"
+      security:
+      - basicAuth: []
+    get:
+      tags:
+      - "users"
+      summary: "get list of users according to the role of user"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "query"
+        description: "user name to search any patient"
+        type: "string"
+      - name: "userId"
+        in: "query"
+        description: "ID of user to search"
+        type: "integer"
+        format: "int64"
+      - name: "isPatient"
+        in: "query"
+        type: "boolean"
+        description: "true to get patient data"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/user"
+        400:
+          description: "Invalid string could not find"
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - "users"
+      summary: "Updates a patient with body data"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Updated name of the patient"
+        required: true
+        schema:
+          $ref: '#/definitions/user'
+      responses:
+        200:
+          description: "Successfully Updated"
+        405:
+          description: "Invalid input"
+        500:
+          description: "Something went wrong"
+      security:
+        - basicAuth: []
+    delete:
+      tags:
+      - "users"
+      summary: "Deletes a patient"
+      description: ""
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "userId"
+        in: "query"
+        description: "User id to delete"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "succesfully deleted"
+        400:
+          description: "Invalid user Id"
+        404:
+          description: "Patient not found"
+      security:
+        - basicAuth: []
+  /users/edd:
+    post:
+      tags:
+      - "users"
+      summary: "calculates expected delivery date"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Additional data to pass to server"
+        required: true
+        schema:
+          $ref: '#/definitions/eddRequest'
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/eddResponse"
+        500:
+          description: "Something went wrong"
+      security:
+        - basicAuth: []
+    put:
+      tags:
+      - "users"
+      summary: "calculates expected delivery date"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Additional data to pass to server"
+        required: true
+        schema:
+          $ref: '#/definitions/eddRequest'
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/eddResponse"
+        500:
+          description: "Something went wrong"
+      security:
+      - basicAuth: []
+securityDefinitions:
+  basicAuth:
+    type: basic
+definitions:
+  eddRequest:
+    type: "object"
+    properties:
+      userId:
+        type: "integer"
+        format: "int64"
+      IVF:
+        type: "object"
+        properties:
+          dateOfTransfer:
+            type: "string"
+            format: "date"
+      ObstetricUltrasound:
+        type: "object"
+        properties:
+          ultraSoundDate:
+            type: "string"
+            format: "date"
+          GestationalAge:
+            type: "string"
+            format: "days"
+      LastMenstrualPeriod:
+        type: "object"
+        properties:
+          LMPDate:
+            type: "string"
+            format: "date"
+  eddResponse:
+    type: "object"
+    properties:
+      patientId: 
+        type: integer
+      edd:
+        $ref: '#/definitions/Edd'
+  
+  loginResponse:
+    type: "object"
+    properties:
+      userId:
+        type: integer
+      username:
+        type: "string"
+      userRole:
+        type: "string"
+      token:
+        type: "string"
+  Patient:
+    type: "object"
+    properties:
+      patientVisit:
+        type: array
+        items:
+          $ref: '#/definitions/PatientDoctor'
+      eddList:
+        $ref: '#/definitions/EddList'
+  
+  PatientDoctor:
+    type: "object"
+    properties:
+      vistDate:
+        type: "string"
+        format: "date"
+      doctor:
+        $ref: '#/definitions/user'
+      reason:
+        type: "string"
+        format: "date"
+      
+  Edd:
+    type: "object"
+    properties:
+      userId:
+        type: integer
+        format: "int64"
+      ULTRASOUND:
+        $ref: '#/definitions/ultrasound'
+      IVF:
+        $ref: '#/definitions/IVF'
+      LMP:
+        $ref: '#/definitions/LMP'
+  EddList:
+    type: "object"
+    properties:
+      userId:
+        type: integer
+        format: "int64"
+      ULTRASOUND:
+        type: array
+        items:
+          $ref: '#/definitions/ultrasound'
+      IVF:
+        type: array
+        items:
+          $ref: '#/definitions/IVF'
+      LMP:
+        type: array
+        items:
+          $ref: '#/definitions/LMP'
+  ultrasound:
+    type: object
+    properties:
+      changedBy:
+        $ref: '#/definitions/user'
+      entryTime:
+        type: string
+        format: "DATETIME"
+      patientEDDId: 
+        type: integer
+        format: "int64"
+      refPatientEDDId: 
+        type: integer
+        format: "int64"
+      eddDate:
+        type: string
+        format: "date"
+      ultrasoundDate:
+        type: string
+        format: "date"
+      gestationalAgeUltrasound:
+        type: integer
+        format: "days"
+  IVF:
+    type: object
+    properties:
+      changedBy:
+        $ref: '#/definitions/user'
+      entryTime:
+        type: string
+        format: "DATETIME"
+      patientEDDId: 
+        type: integer
+        format: "int64"
+      refPatientEDDId: 
+        type: integer
+        format: "int64"
+      eddDate:
+        type: string
+        format: "date"
+      oocyteRetrievalDate:
+        type: string
+        format: "date"
+  
+  LMP:
+    type: object
+    properties:
+      changedBy:
+        $ref: '#/definitions/user'
+      entryTime:
+        type: string
+        format: "DATETIME"
+      patientEDDId: 
+        type: integer
+        format: "int64"
+      refPatientEDDId: 
+        type: integer
+        format: "int64"
+      eddDate:
+        type: string
+        format: "date"
+      lastMensturialPeriodDate:
+        type: string
+        format: "date"
+  
+  login:
+    type: object
+    required:
+    - userName
+    - password
+    properties:    
+      userName:
+        type: "string"
+        description: "The username for logging in"
+      userEmail:
+        type: "string"
+        description: "The username for logging in"
+      password:
+        description: "The password for login"
+        type: "string"
+
+  user:
+    type: object
+    properties:
+      userId:
+        type: "integer"
+      userName:
+        type: "string"
+        description: "The username for logging in"
+      firstName:
+        type: "string"
+        example: "Alex"
+      lastName:
+        type: "string"
+        example: "Roise"
+      userEmail:
+        type: "string"
+      dateOfBirth:
+        type: "string"
+        format: "date"
+      gender:
+        type: "string"
+        enum:
+        - "M"
+        - "F"
+        - "O"
+      bloodGroup:
+        type: "string"
+        example: "A+"
+      weight:
+        type: "number"
+        format: "int32"
+      height:
+        type: "number"
+        format: "cm"
+      patientData:
+        $ref: '#/definitions/Patient'
+      userRole:
+        type: "string"
+        enum:
+        - "DOCTOR"
+        - "PATIENT"
+        - "ADMIN"
+
+  register:
+    type: object
+    required:
+    - userName
+    - password
+    properties:    
+      userName:
+        type: "string"
+        description: "The username for logging in"
+      password:
+        description: "The password for login"
+        type: "string"
+      firstName:
+        type: "string"
+        example: "Alex"
+      lastName:
+        type: "string"
+        example: "Roise"
+      userEmail:
+        type: "string"
+      userMobile:
+        type: "string"
+      userRole:
+        type: "string"
+        enum:
+        - "DOCTOR"
+        - "PATIENT"
+        - "ADMIN"
+      

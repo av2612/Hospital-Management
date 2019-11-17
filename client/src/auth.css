@@ -1,0 +1,63 @@
+.login-form .form{
+  text-align: left;
+  background: skyblue;
+    max-width: 360px;
+    min-width: 360px;
+    margin: 0 auto;
+    padding: 45px;
+    padding-bottom: 80px;
+    margin-top: 6em;
+}
+.fa-eye, .fa-eye-slash {
+   color: black;
+
+}
+
+.form form input:invalid {
+  border: 1.2px solid red;
+}
+/* .form form input, */
+.form form input[text]:valid {
+  border-color: 1.5px solid green;
+}
+.login-form .form .login-input{
+  width: 100%;
+  background-color: white;
+  border: 1px solid black;
+  margin-bottom: 10%;
+  padding-right: 1%;
+}
+.login-form .form .login-input input{
+  width: 90%;
+border: 0px;
+
+  margin-bottom: 0%;
+  margin-top: 0%;
+}
+
+.form {
+    /* position: relative; */
+    background: skyblue;
+    max-width: 600px;
+    min-width: 300px;
+    height: auto;
+    margin: 0 auto;
+    padding: 45px;
+    padding-bottom: 80px;
+    text-align: center;
+    margin-top: 6em;
+    /* transform: translateY(100px); */
+
+  }
+  .form input, select {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    width: 100%;
+    border: 1px solid black;
+    margin: 0 0 15px;
+    padding: 12px;
+    /* box-sizing: border-box; */
+    font-size: 14px;
+    background-color: white;
+  }
+
